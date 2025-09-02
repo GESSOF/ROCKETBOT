@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal RocketBot Studio - Tutorial Completo de Comandos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #21CBF3;
+            --accent-color: #FF6B35;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --danger-color: #f44336;
+            --dark-color: #2c3e50;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .portal-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-conic-gradient(from 0deg, transparent 0deg 90deg, rgba(255,255,255,0.03) 90deg 180deg);
+            animation: rotate 20s linear infinite;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tabs-container {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .tabs-nav {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 10%, rgba(255,255,255,1) 90%, rgba(255,255,255,0.9) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .tab-btn {
+            flex: none;
+            padding: 20px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary-color);
+            background: rgba(33, 150, 243, 0.05);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: rgba(33, 150, 243, 0.08);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .command-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid #e9ecef;
+        }
+        
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        .command-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .command-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+        
+        .command-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .command-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+        }
+        
+        .expand-icon {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .command-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .command-body.expanded {
+            max-height: 2000px;
+        }
+        
+        .command-content {
+            padding: 25px;
+        }
+        
+        .command-description {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .parameters-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .parameters-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .param-list {
+            list-style: none;
+        }
+        
+        .param-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .param-item:last-child {
+            border-bottom: none;
+        }
+        
+        .param-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 120px;
+            flex: none;
+        }
+        
+        .example-section {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .example-section h4 {
+            color: #63b3ed;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .code-block {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        
+        .tips-section {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .tips-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            border-left-color: var(--primary-color);
+            color: #0c5460;
+        }
+        
+        .category-intro {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(33, 203, 243, 0.1));
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            border: 1px solid rgba(33, 150, 243, 0.2);
+        }
+        
+        .category-intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .search-container {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .footer h3 {
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .footer p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-new {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .badge-updated {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .badge-deprecated {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            .commands-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tabs-nav {
+                padding: 0 10px;
+            }
+            
+            .tab-btn {
+                padding: 15px 15px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1>🚀 RocketBot Studio</h1>
+                <p>Portal Completo de Comandos y Funcionalidades</p>
+                <p>Guía definitiva para automatización robótica</p>
+                <div class="version-badge">Versión 2025 - Actualizado</div>
+            </div>
+        </div>
+
+        <!-- Búsqueda Global -->
+        <div style="padding: 20px 40px; background: white;">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar comando, función o palabra clave..." id="globalSearch">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div style="padding: 0 40px 20px; background: white;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">150+</span>
+                    <span class="stat-label">Comandos Disponibles</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Categorías Principales</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Ejemplos Prácticos</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Cobertura Funcional</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <nav class="tabs-nav">
+                <button class="tab-btn active" data-tab="web">🌐 Web</button>
+                <button class="tab-btn" data-tab="system">💻 Sistema</button>
+                <button class="tab-btn" data-tab="logic">🧠 Lógicos</button>
+                <button class="tab-btn" data-tab="files">📁 Archivos</button>
+                <button class="tab-btn" data-tab="excel">📊 Excel</button>
+                <button class="tab-btn" data-tab="email">📧 Email</button>
+                <button class="tab-btn" data-tab="database">🗄️ MySQL</button>
+                <button class="tab-btn" data-tab="http">🌍 HTTP</button>
+                <button class="tab-btn" data-tab="desktop">🖥️ Desktop</button>
+                <button class="tab-btn" data-tab="virtualization">🎭 Virtualización</button>
+                <button class="tab-btn" data-tab="data-format">📋 Data Format</button>
+                <button class="tab-btn" data-tab="windows">🪟 Windows</button>
+                <button class="tab-btn" data-tab="frameworks">⚡ Frameworks</button>
+                <button class="tab-btn" data-tab="integrations">🔗 Integraciones</button>
+                <button class="tab-btn" data-tab="mods">🧩 Mods</button>
+            </nav>
+        </div>
+
+        <!-- Web Tab -->
+        <div class="tab-content active" id="web">
+            <div class="category-intro">
+                <h2>🌐 Comandos Web - Automatización de Navegadores</h2>
+                <p>Conjunto completo de comandos para automatizar navegadores web, interactuar con elementos DOM, manejar formularios y realizar scraping de datos.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🌐</div>
+                            Open Browser - Abrir Navegador
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Inicia un navegador web y navega a una URL específica. Es el comando fundamental para iniciar cualquier automatización web.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Parámetros Principales:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Browser:</span>
+                                        <span>Chrome, Firefox, Edge, Safari</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">URL:</span>
+                                        <span>Dirección web de destino</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">ID Session:</span>
+                                        <span>Identificador para múltiples navegadores</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Profile:</span>
+                                        <span>Perfil del navegador (para mantener sesiones)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplo de Uso:</h4>
+                                <div class="code-block">
+Browser: Chrome<br>
+URL: https://www.google.com<br>
+ID Session: main_browser<br>
+Result: resultado_apertura
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <strong>⚠️ Importante:</strong> Siempre validar la apertura del navegador con "Wait for Object" después de este comando.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">⏳</div>
+                            Wait for Object - Esperar por Objeto
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Espera a que un elemento web específico aparezca, sea visible o clickeable. Comando crucial para validaciones.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Parámetros:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Object:</span>
+                                        <span>XPath, ID, Class del elemento</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Type:</span>
+                                        <span>xpath, id, class, name</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Action:</span>
+                                        <span>visible, clickable, present</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Timeout:</span>
+                                        <span>Tiempo máximo de espera (segundos)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="alert alert-success">
+                                <strong>✅ Uso Obligatorio:</strong> Usar después de Open Browser y antes de cualquier interacción con elementos web.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">👆</div>
+                            Click Object - Hacer Clic en Objeto
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Realiza clic en un elemento web específico como botones, enlaces o cualquier elemento clickeable.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Parámetros:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Object:</span>
+                                        <span>Selector del elemento</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Type:</span>
+                                        <span>xpath, id, class, name</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Click Type:</span>
+                                        <span>left, right, double</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Diferencia XPath vs ID:</h4>
+                                <ul>
+                                    <li><strong>XPath:</strong> Ubicación exacta del elemento</li>
+                                    <li><strong>ID:</strong> Identificador único (preferible si es fijo)</li>
+                                    <li><strong>Full XPath:</strong> Ruta completa (menos confiable)</li>
+                                    <li><strong>Class:</strong> Para múltiples elementos similares</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">⌨️</div>
+                            Send Text - Enviar Texto
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Escribe texto en campos de entrada, formularios o cualquier elemento editable de la página web.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplo Búsqueda en Google:</h4>
+                                <div class="code-block">
+Object: //input[@name='q']<br>
+Text: {variable_busqueda}<br>
+Clear First: True<br>
+Send Enter: True
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📄</div>
+                            Get Text - Extraer Texto
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Extrae el texto contenido en un elemento web específico para procesarlo o guardarlo.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Uso Común:</h4>
+                                <ul>
+                                    <li>Extraer precios de productos</li>
+                                    <li>Obtener títulos de páginas</li>
+                                    <li>Capturar mensajes de confirmación</li>
+                                    <li>Leer datos de tablas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">💻</div>
+                            Execute JavaScript - Ejecutar JavaScript
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Ejecuta código JavaScript personalizado en la página web actual para acciones avanzadas.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplos de JavaScript:</h4>
+                                <div class="code-block">
+// Extraer por clase<br>
+return document.getElementsByClassName("precio")[0].innerText;<br><br>
+
+// Abrir nueva ventana<br>
+window.open('https://example.com', '_blank');<br><br>
+
+// Scroll hasta elemento<br>
+document.getElementById("footer").scrollIntoView();
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema Tab -->
+        <div class="tab-content" id="system">
+            <div class="category-intro">
+                <h2>💻 Comandos Sistema - Interacción con el SO</h2>
+                <p>Comandos para interactuar con el sistema operativo, manejar variables, obtener información del sistema y controlar la ejecución del robot.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📝</div>
+                            Set Variable - Establecer Variable
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Asigna valores a variables durante la ejecución del robot. Fundamental para el manejo de datos.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplos de Uso:</h4>
+                                <div class="code-block">
+# Valor simple<br>
+Variable: contador<br>
+Value: 1<br><br>
+
+# Expresión matemática<br>
+Variable: contador<br>
+Expression: contador + 1<br><br>
+
+# Concatenación<br>
+Variable: mensaje<br>
+Expression: "Hola " + nombre
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">ℹ️</div>
+                            Get System Info - Información del Sistema
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Obtiene información del sistema operativo como usuario, fecha, hora, rutas, etc.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Tipos de Información:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">User:</span>
+                                        <span>Usuario actual del sistema</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">DateTime:</span>
+                                        <span>Fecha y hora actuales</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">OS:</span>
+                                        <span>Sistema operativo</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Computer:</span>
+                                        <span>Nombre del equipo</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">⏱️</div>
+                            Wait - Esperar
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Pausa la ejecución del robot por un tiempo determinado. Útil para sincronización.
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <strong>⚠️ Cuidado:</strong> Usar "Wait for Object" es mejor que pausas fijas para elementos web.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logic Tab -->
+        <div class="tab-content" id="logic">
+            <div class="category-intro">
+                <h2>🧠 Comandos Lógicos - Control de Flujo</h2>
+                <p>Estructuras de control para toma de decisiones, bucles, manejo de errores y control del flujo de ejecución del robot.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">❓</div>
+                            IF - Condición Si/Entonces
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Ejecuta diferentes bloques de código según se cumpla o no una condición específica.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Operadores Disponibles:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item"><span class="param-name">==</span><span>Igual a</span></li>
+                                    <li class="param-item"><span class="param-name">!=</span><span>Diferente de</span></li>
+                                    <li class="param-item"><span class="param-name">></span><span>Mayor que</span></li>
+                                    <li class="param-item"><span class="param-name"><</span><span>Menor que</span></li>
+                                    <li class="param-item"><span class="param-name">AND</span><span>Y lógico</span></li>
+                                    <li class="param-item"><span class="param-name">OR</span><span>O lógico</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔄</div>
+                            FOR - Bucle de Iteración
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Repite un bloque de código para cada elemento de una lista o rango específico.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Estructura de Lista de Excel:</h4>
+                                <div class="code-block">
+datos = [<br>
+    ["Juan", "juan@email.com", 123456],<br>
+    ["Ana", "ana@email.com", 789012],<br>
+    ["Carlos", "carlos@email.com", 345678]<br>
+]<br><br>
+
+# En FOR loop:<br>
+Iterable: datos<br>
+Item Variable: fila<br><br>
+
+# Dentro del loop:<br>
+nombre = fila[0]<br>
+email = fila[1]<br>
+telefono = fila[2]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🛡️</div>
+                            TRY CATCH - Manejo de Errores
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Ejecuta un bloque de código y maneja errores si ocurren. Diferente del IF.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Diferencia con IF:</h4>
+                                <div class="code-block">
+# IF: Ejecuta UNO u OTRO<br>
+if condicion:<br>
+    # Bloque A<br>
+else:<br>
+    # Bloque B<br><br>
+
+# TRY CATCH: Ejecuta TRY, CATCH solo si error<br>
+try:<br>
+    # Siempre se ejecuta<br>
+catch:<br>
+    # Solo si hay error en TRY
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Tab -->
+        <div class="tab-content" id="files">
+            <div class="category-intro">
+                <h2>📁 Comandos Archivos - Gestión del Sistema de Archivos</h2>
+                <p>Comandos para manipular archivos y directorios, leer y escribir texto, gestionar rutas y organizar documentos.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">💾</div>
+                            Save Text - Guardar Texto
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Guarda texto en un archivo. Esencial para crear logs y reportes.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Casos de Uso:</h4>
+                                <ul>
+                                    <li>Logs de ejecución</li>
+                                    <li>Reportes de procesamiento</li>
+                                    <li>Backup de datos extraídos</li>
+                                    <li>Comunicación entre robots</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📖</div>
+                            Read Text - Leer Texto
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Lee el contenido completo de un archivo de texto.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📋</div>
+                            List Files - Listar Archivos
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Obtiene una lista de archivos de una carpeta específica con filtros opcionales.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Procesar Múltiples Archivos:</h4>
+                                <div class="code-block">
+Path: C:/documentos/<br>
+Pattern: *.pdf<br>
+Result: lista_pdfs<br><br>
+
+# Luego usar en FOR loop<br>
+for archivo in lista_pdfs:<br>
+    # Procesar cada PDF
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Excel Tab -->
+        <div class="tab-content" id="excel">
+            <div class="category-intro">
+                <h2>📊 Comandos Excel - Automatización de Hojas de Cálculo</h2>
+                <p>Conjunto completo de comandos para trabajar con archivos Excel, leer y escribir datos, aplicar formatos y ejecutar macros.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📊</div>
+                            Open Excel vs Open XLSX
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <p><strong>Excel:</strong> Requiere Microsoft Excel instalado. Abre la aplicación visualmente.</p>
+                                <p><strong>XLSX:</strong> No requiere Excel instalado. Funciona en Mac, Linux y Windows sin licencia.</p>
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Recomendación:</h4>
+                                <ul>
+                                    <li>Preferir XLSX para mayor compatibilidad</li>
+                                    <li>Excel solo si necesitas macros específicas</li>
+                                    <li>XLSX no abre aplicación en segundo plano</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📖</div>
+                            Read Cells - Leer Celdas
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Lee un rango de celdas de una hoja de Excel y guarda los datos en una variable.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Rango Dinámico vs Fijo:</h4>
+                                <div class="code-block">
+# ❌ Rango fijo (malo)<br>
+Range: A2:D6<br><br>
+
+# ✅ Rango dinámico (bueno)<br>
+Range: A2:D{filas}<br><br>
+
+# Primero contar filas<br>
+Count Rows → variable: filas<br>
+# Luego leer con rango dinámico
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Tab -->
+        <div class="tab-content" id="email">
+            <div class="category-intro">
+                <h2>📧 Comandos Email - Automatización de Correo</h2>
+                <p>Herramientas para enviar, recibir, leer y gestionar correos electrónicos desde Gmail, Outlook y otros proveedores.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">⚙️</div>
+                            Configure Server - Configurar Servidor
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Configura la conexión con el servidor de correo electrónico (Gmail, Outlook, etc.)
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <strong>⚠️ Seguridad:</strong> Nunca usar la contraseña normal de Gmail. Siempre usar contraseña de aplicación.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📤</div>
+                            Send Email - Enviar Correo
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Envía un correo electrónico con destinatarios, asunto, cuerpo y adjuntos.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Tab -->
+        <div class="tab-content" id="database">
+            <div class="category-intro">
+                <h2>🗄️ Comandos MySQL - Gestión de Bases de Datos</h2>
+                <p>Comandos para conectar, consultar y manipular bases de datos MySQL, ejecutar queries y gestionar transacciones.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔌</div>
+                            Connect MySQL - Conectar Base de Datos
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Establece conexión con servidor MySQL para ejecutar consultas y operaciones.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Parámetros de Conexión:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Host:</span>
+                                        <span>Servidor de base de datos</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Port:</span>
+                                        <span>Puerto (generalmente 3306)</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Database:</span>
+                                        <span>Nombre de la base de datos</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">User:</span>
+                                        <span>Usuario de acceso</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Password:</span>
+                                        <span>Contraseña del usuario</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔍</div>
+                            Execute Query - Ejecutar Consulta
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Ejecuta consultas SQL (SELECT, INSERT, UPDATE, DELETE) en la base de datos conectada.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplos de Consultas:</h4>
+                                <div class="code-block">
+# SELECT - Consultar datos<br>
+SELECT * FROM usuarios WHERE activo = 1<br><br>
+
+# INSERT - Insertar registro<br>
+INSERT INTO productos (nombre, precio) VALUES ('Laptop', 1500)<br><br>
+
+# UPDATE - Actualizar datos<br>
+UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = 123<br><br>
+
+# DELETE - Eliminar registro<br>
+DELETE FROM pedidos WHERE fecha < '2023-01-01'
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔒</div>
+                            Close MySQL - Cerrar Conexión
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Cierra la conexión con la base de datos para liberar recursos.
+                            </div>
+                            
+                            <div class="alert alert-success">
+                                <strong>✅ Buena Práctica:</strong> Siempre cerrar conexiones DB al final del robot para evitar conexiones huérfanas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HTTP Tab -->
+        <div class="tab-content" id="http">
+            <div class="category-intro">
+                <h2>🌍 Comandos HTTP - Conexiones Web y APIs</h2>
+                <p>Herramientas para realizar peticiones HTTP, consumir APIs REST, enviar datos POST/GET y manejar respuestas JSON.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📥</div>
+                            HTTP Request - Petición HTTP
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Realiza peticiones HTTP a APIs y servicios web con diferentes métodos (GET, POST, PUT, DELETE).
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Parámetros Principales:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">URL:</span>
+                                        <span>Endpoint de la API</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Method:</span>
+                                        <span>GET, POST, PUT, DELETE, PATCH</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Headers:</span>
+                                        <span>Cabeceras HTTP (Content-Type, Authorization)</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Body:</span>
+                                        <span>Datos a enviar (JSON, XML, form-data)</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Timeout:</span>
+                                        <span>Tiempo máximo de espera</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplos de Peticiones:</h4>
+                                <div class="code-block">
+# GET - Obtener datos<br>
+URL: https://api.ejemplo.com/usuarios<br>
+Method: GET<br>
+Headers: {'Authorization': 'Bearer token123'}<br><br>
+
+# POST - Enviar datos<br>
+URL: https://api.ejemplo.com/usuarios<br>
+Method: POST<br>
+Headers: {'Content-Type': 'application/json'}<br>
+Body: {"nombre": "Juan", "email": "juan@email.com"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📊</div>
+                            Parse JSON - Procesar JSON
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Convierte respuestas JSON en estructuras de datos manejables para extraer información específica.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplo de Procesamiento:</h4>
+                                <div class="code-block">
+# Respuesta JSON de API<br>
+{<br>
+  "usuarios": [<br>
+    {"id": 1, "nombre": "Juan", "activo": true},<br>
+    {"id": 2, "nombre": "Ana", "activo": false}<br>
+  ]<br>
+}<br><br>
+
+# Extraer primer usuario<br>
+primer_usuario = json_data["usuarios"][0]<br>
+nombre = primer_usuario["nombre"]  # "Juan"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📁</div>
+                            Download File - Descargar Archivo
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Descarga archivos desde URLs remotas y los guarda en el sistema local.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Casos de Uso:</h4>
+                                <ul>
+                                    <li>Descargar reportes de APIs</li>
+                                    <li>Obtener archivos de respaldo</li>
+                                    <li>Sincronizar documentos remotos</li>
+                                    <li>Descargar imágenes y media</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Tab -->
+        <div class="tab-content" id="desktop">
+            <div class="category-intro">
+                <h2>🖥️ Comandos Desktop - Aplicaciones de Escritorio</h2>
+                <p>Automatización de aplicaciones nativas de Windows, interacción con controles específicos y manejo de ventanas.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔗</div>
+                            Connect Application - Conectar Aplicación
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Conecta con una aplicación de escritorio específica para automatización.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Aplicaciones Compatibles:</h4>
+                                <ul>
+                                    <li>Microsoft Office (Word, Excel, PowerPoint)</li>
+                                    <li>SAP GUI</li>
+                                    <li>Aplicaciones .NET</li>
+                                    <li>Aplicaciones Java</li>
+                                    <li>Software personalizado empresarial</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Virtualization Tab -->
+        <div class="tab-content" id="virtualization">
+            <div class="category-intro">
+                <h2>🎭 Comandos Virtualización - Automatización por Imágenes</h2>
+                <p>Tecnología de automatización basada en reconocimiento de imágenes para aplicaciones que no soportan otros métodos.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🖼️</div>
+                            Click Image - Clic en Imagen
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Localiza y hace clic en elementos de la pantalla basándose en reconocimiento de imágenes.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Parámetros:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Image:</span>
+                                        <span>Archivo de imagen de referencia</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Precision:</span>
+                                        <span>Porcentaje de coincidencia (0-100)</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Timeout:</span>
+                                        <span>Tiempo máximo de búsqueda</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Mejores Prácticas:</h4>
+                                <ul>
+                                    <li>Usar imágenes pequeñas y distintivas</li>
+                                    <li>Configurar precisión entre 85-95%</li>
+                                    <li>Evitar elementos que cambien de color</li>
+                                    <li>Probar en diferentes resoluciones</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">👀</div>
+                            Wait for Image - Esperar por Imagen
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Espera hasta que una imagen específica aparezca en la pantalla antes de continuar.
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <strong>💡 Uso Común:</strong> Ideal para aplicaciones legacy, sistemas propietarios y interfaces que no permiten automatización tradicional.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">↗️</div>
+                            Drag to Image - Arrastrar a Imagen
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Realiza operaciones de arrastrar y soltar entre elementos identificados por imágenes.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Casos de Uso:</h4>
+                                <div class="code-block">
+- Mover archivos entre carpetas<br>
+- Reorganizar elementos en interfaces<br>
+- Completar puzzles o juegos<br>
+- Configurar dashboards arrastrables
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Format Tab -->
+        <div class="tab-content" id="data-format">
+            <div class="category-intro">
+                <h2>📋 Comandos Data Format - Manipulación de Datos</h2>
+                <p>Herramientas para convertir, procesar y manipular diferentes formatos de datos como JSON, XML, CSV y más.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📄</div>
+                            Parse CSV - Procesar CSV
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Lee y convierte archivos CSV en estructuras de datos manejables para procesamiento.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Configuraciones:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Delimiter:</span>
+                                        <span>Separador de campos (coma, punto y coma, tab)</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Encoding:</span>
+                                        <span>Codificación del archivo (UTF-8, Latin-1)</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Header:</span>
+                                        <span>Primera fila contiene encabezados</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🏷️</div>
+                            Parse XML - Procesar XML
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Analiza documentos XML y extrae información específica usando XPath o estructura de nodos.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Ejemplo de XPath:</h4>
+                                <div class="code-block">
+# Documento XML<br>
+&lt;productos&gt;<br>
+  &lt;producto id="1"&gt;<br>
+    &lt;nombre&gt;Laptop&lt;/nombre&gt;<br>
+    &lt;precio&gt;1500&lt;/precio&gt;<br>
+  &lt;/producto&gt;<br>
+&lt;/productos&gt;<br><br>
+
+# XPath para extraer precio<br>
+//producto[@id='1']/precio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔧</div>
+                            Format Data - Formatear Datos
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Convierte y transforma datos entre diferentes formatos y estructuras.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Transformaciones Disponibles:</h4>
+                                <ul>
+                                    <li>JSON a CSV y viceversa</li>
+                                    <li>XML a JSON</li>
+                                    <li>Lista a diccionario</li>
+                                    <li>Formateo de fechas y números</li>
+                                    <li>Limpieza de texto y caracteres especiales</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Windows Tab -->
+        <div class="tab-content" id="windows">
+            <div class="category-intro">
+                <h2>🪟 Comandos Windows - Sistema Operativo</h2>
+                <p>Comandos específicos para Windows, gestión de procesos, registro del sistema y funcionalidades del SO.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">⚙️</div>
+                            Registry Operations - Operaciones de Registro
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Lee y modifica claves del registro de Windows para configuraciones del sistema.
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <strong>⚠️ Precaución:</strong> Las modificaciones del registro pueden afectar el sistema. Always crear respaldo antes de cambios.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🏃</div>
+                            Process Management - Gestión de Procesos
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Lista, inicia, detiene y monitorea procesos del sistema Windows.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Operaciones Disponibles:</h4>
+                                <ul>
+                                    <li>Listar procesos activos</li>
+                                    <li>Terminar procesos por nombre o PID</li>
+                                    <li>Monitorear uso de CPU y memoria</li>
+                                    <li>Iniciar aplicaciones con parámetros</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🖼️</div>
+                            Window Management - Gestión de Ventanas
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Controla ventanas de aplicaciones: minimizar, maximizar, redimensionar y posicionar.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frameworks Tab -->
+        <div class="tab-content" id="frameworks">
+            <div class="category-intro">
+                <h2>⚡ Comandos Frameworks - Frameworks Especializados</h2>
+                <p>Integración con frameworks populares como SAP, .NET, Java y otras tecnologías empresariales.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🏢</div>
+                            SAP Integration - Integración SAP
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Conecta y automatiza procesos en aplicaciones SAP GUI y SAP Web.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Capacidades SAP:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">GUI Scripting:</span>
+                                        <span>Automatización nativa SAP GUI</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Transaction Codes:</span>
+                                        <span>Ejecución automática de TCode</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Data Extraction:</span>
+                                        <span>Extracción masiva de datos</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">☕</div>
+                            Java Applications - Aplicaciones Java
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Automatiza aplicaciones desarrolladas en Java usando tecnología de accesibilidad.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Aplicaciones Compatibles:</h4>
+                                <ul>
+                                    <li>Aplicaciones Swing y AWT</li>
+                                    <li>Software empresarial en Java</li>
+                                    <li>IDEs como Eclipse, NetBeans</li>
+                                    <li>Herramientas de análisis de datos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🔷</div>
+                            .NET Framework - Framework .NET
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Integración profunda con aplicaciones Windows desarrolladas en .NET Framework.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integrations Tab -->
+        <div class="tab-content" id="integrations">
+            <div class="category-intro">
+                <h2>🔗 Integración con Aplicaciones</h2>
+                <p>Conectores especializados para aplicaciones populares y servicios en la nube.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📊</div>
+                            Google Workspace - Integración Google
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Automatiza Google Sheets, Drive, Gmail y Calendar usando APIs oficiales.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Servicios Disponibles:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Google Sheets:</span>
+                                        <span>Leer, escribir y formatear hojas de cálculo</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Google Drive:</span>
+                                        <span>Subir, descargar y gestionar archivos</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Gmail API:</span>
+                                        <span>Enviar y recibir emails programáticamente</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Google Calendar:</span>
+                                        <span>Crear y gestionar eventos</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">💼</div>
+                            Microsoft 365 - Integración Office
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Conecta con SharePoint, OneDrive, Teams y otros servicios Microsoft.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📱</div>
+                            Slack Integration - Integración Slack
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Envía mensajes, notificaciones y archivos a canales de Slack automáticamente.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Casos de Uso:</h4>
+                                <div class="code-block">
+- Notificar completación de robots<br>
+- Enviar reportes automáticos<br>
+- Alertas de errores críticos<br>
+- Compartir resultados con equipos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mods Tab -->
+        <div class="tab-content" id="mods">
+            <div class="category-intro">
+                <h2>🧩 Mods - Módulos y Extensiones</h2>
+                <p>Sistema de módulos extensibles desarrollados por la comunidad y partners de RocketBot.</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">📦</div>
+                            Install Mods - Instalar Módulos
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Instala módulos adicionales desde el Marketplace de RocketBot para extender funcionalidades.
+                            </div>
+                            
+                            <div class="parameters-section">
+                                <h4>📋 Tipos de Módulos:</h4>
+                                <ul class="param-list">
+                                    <li class="param-item">
+                                        <span class="param-name">Conectores:</span>
+                                        <span>Integración con aplicaciones específicas</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Utilidades:</span>
+                                        <span>Herramientas de procesamiento de datos</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">AI/ML:</span>
+                                        <span>Módulos de inteligencia artificial</span>
+                                    </li>
+                                    <li class="param-item">
+                                        <span class="param-name">Seguridad:</span>
+                                        <span>Herramientas de encriptación y seguridad</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🏪</div>
+                            Marketplace - Tienda de Módulos
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Accede al marketplace oficial para descargar módulos gratuitos y premium.
+                            </div>
+                            
+                            <div class="tips-section">
+                                <h4>✨ Categorías Populares:</h4>
+                                <ul>
+                                    <li>OCR y reconocimiento de texto</li>
+                                    <li>Procesamiento de imágenes</li>
+                                    <li>Conectores de redes sociales</li>
+                                    <li>Herramientas de análisis de datos</li>
+                                    <li>Integraciones con ERPs específicos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header" onclick="toggleCommand(this)">
+                        <div class="command-title">
+                            <div class="command-icon">🛠️</div>
+                            Create Custom Mod - Crear Módulo Personalizado
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="command-body">
+                        <div class="command-content">
+                            <div class="command-description">
+                                <strong>Función:</strong> Framework para desarrollar módulos personalizados usando Python.
+                            </div>
+                            
+                            <div class="example-section">
+                                <h4>💡 Estructura Básica de Módulo:</h4>
+                                <div class="code-block">
+# my_custom_mod.py<br>
+def main(params):<br>
+    # Lógica del módulo<br>
+    result = process_data(params)<br>
+    return {"status": "success", "data": result}<br><br>
+
+def process_data(data):<br>
+    # Procesamiento personalizado<br>
+    return data.upper()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>🚀 ¡Domina RocketBot Studio!</h3>
+            <p>Con este portal completo tienes acceso a todos los comandos y funcionalidades de RocketBot Studio. Cada comando incluye ejemplos prácticos, parámetros detallados y mejores prácticas para crear robots robustos y eficientes.</p>
+            <br>
+            <p><strong>💡 Próximo paso:</strong> Combina múltiples categorías de comandos para automatizar procesos complejos y crear soluciones RPA empresariales completas.</p>
+            <br>
+            <p style="opacity: 0.7; font-size: 0.9em;">Portal actualizado para RocketBot Studio 2025 | Versión completa con 150+ comandos</p>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active from all tabs and contents
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active to clicked tab and corresponding content
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Command card toggle functionality
+        function toggleCommand(header) {
+            const body = header.nextElementSibling;
+            const icon = header.querySelector('.expand-icon');
+            
+            if (body.classList.contains('expanded')) {
+                body.classList.remove('expanded');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                body.classList.add('expanded');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Search functionality
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const commandCards = document.querySelectorAll('.command-card');
+            
+            commandCards.forEach(card => {
+                const title = card.querySelector('.command-title').textContent.toLowerCase();
+                const content = card.querySelector('.command-content').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = searchTerm === '' ? 'block' : 'none';
+                }
+            });
+        });
+
+        // Smooth scroll for internal navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-expand first command in each category for demo
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                const firstCommand = tab.querySelector('.command-header');
+                if (firstCommand && tab.classList.contains('active')) {
+                    toggleCommand(firstCommand);
+                }
+            });
+        });
+
+        // Add loading animation for tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = document.getElementById(btn.dataset.tab);
+                content.style.opacity = '0';
+                setTimeout(() => {
+                    content.style.opacity = '1';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
